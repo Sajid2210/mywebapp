@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+
+# Env & secrets
+.env
+
+# Django collectstatic output
+/static/
+
+# Virtualenv
+env/
+.env.d/
