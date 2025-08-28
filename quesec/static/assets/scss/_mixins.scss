@@ -1,0 +1,287 @@
+@use "sass:map";
+$screen: ( // screen sizes in px 
+  xs: 480px,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px,
+  3xl: 1600px,
+  4xl: 1800px,
+);
+
+@mixin screen($key) {
+  $size: map-get($screen, $key);
+
+  @media (min-width: $size) {
+    @content;
+  }
+}
+
+//for common boxes
+@mixin box($value) {
+  width: #{$value}px;
+  min-width: #{$value}px;
+  max-width: #{$value}px;
+  height: #{$value}px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// translate position style
+// Generate top, bottom, left, and right classes using loops
+$positions: top,
+bottom,
+left,
+right;
+$percentages: 0,
+5,
+10,
+15,
+20,
+25,
+30,
+35,
+40,
+45,
+50,
+55,
+60,
+65,
+70,
+75,
+80,
+85,
+90,
+95,
+100;
+
+@each $position in $positions {
+  @each $percentage in $percentages {
+    .#{$position}-#{$percentage} {
+      #{$position}: #{$percentage + '%'} !important;
+    }
+  }
+}
+
+// Generate responsive top, bottom, left, and right classes using loops
+@each $breakpoint,
+$value in $screen {
+  @include screen(#{$breakpoint}) {
+    @each $position in $positions {
+      @each $percentage in $percentages {
+        .#{$position}-#{$breakpoint}-#{$percentage} {
+          #{$position}: #{$percentage + '%'} !important;
+        }
+      }
+    }
+  }
+}
+
+// Generate negative top, bottom, left, and right classes using loops
+@each $position in $positions {
+  @each $percentage in $percentages {
+    .#{$position}-#{'n' + $percentage} {
+      #{$position}: #{-$percentage + '%'} !important;
+    }
+  }
+}
+
+// Generate responsive negative top, bottom, left, and right classes using loops
+@each $breakpoint,
+$value in $screen {
+  @include screen(#{$breakpoint}) {
+    @each $position in $positions {
+      @each $percentage in $percentages {
+        .#{$position}-#{$breakpoint}-#{'n' + $percentage} {
+          #{$position}: #{-$percentage + '%'} !important;
+        }
+      }
+    }
+  }
+}
+
+// width style
+$widths: (unset, 0, 5, 10, 15, 20, 25, 28, 29, 30, 35, 38, 39, 40, 45, 48, 49, 50, 55, 58, 59, 60, 65, 68, 69, 70, 75, 80, 85, 88, 89, 90, 95, 100);
+
+// Generate width classes for percentages
+@each $width in $widths {
+  .w-#{$width} {
+    width: if($width==unset, unset, #{$width + '%'} !important);
+  }
+}
+
+// Generate responsive width classes
+@each $breakpoint,
+$value in $screen {
+  @include screen(#{$breakpoint}) {
+    @each $width in $widths {
+      .w-#{$breakpoint}-#{$width} {
+        width: if($width==unset, unset, #{$width + '%'} !important);
+      }
+    }
+  }
+}
+
+// Border radius variables
+$radius-values: (unset: unset,
+  circle: 50%,
+  pill: 9999px,
+  2: 2px,
+  4: 4px,
+  6: 6px,
+  8: 8px,
+  10: 10px,
+  12: 12px,
+  14: 14px,
+  16: 16px,
+  18: 18px,
+  20: 20px,
+  22: 22px,
+  24: 24px,
+  26: 26px,
+  28: 28px,
+  30: 30px,
+  32: 32px,
+  34: 34px,
+  36: 36px,
+  38: 38px,
+  40: 40px,
+  42: 42px);
+
+// Generate radius classes
+@each $key,
+$value in $radius-values {
+  .radius-#{$key} {
+    border-radius: $value !important;
+  }
+}
+
+// Generate responsive radius classes
+@each $breakpoint,
+$value in $screen {
+  @include screen(#{$breakpoint}) {
+
+    @each $key,
+    $value in $radius-values {
+      .radius-#{$breakpoint}-#{$key} {
+        border-radius: $value !important;
+      }
+    }
+  }
+}
+
+
+
+// ch -> character
+$chLimit: 5,
+10,
+15,
+20,
+25,
+30,
+35,
+40,
+45,
+50,
+55,
+60,
+65,
+70,
+75,
+80,
+85,
+90,
+95,
+100;
+
+@each $ch in $chLimit {
+  .ch-#{$ch} {
+    max-width: #{$ch + 'ch'} !important;
+  }
+}
+
+// Generate responsive ch classes
+@each $breakpoint,
+$value in $screen {
+  @include screen(#{$breakpoint}) {
+    @each $ch in $chLimit {
+      .ch-#{$breakpoint}-#{$ch} {
+        max-width: #{$ch + 'ch'} !important;
+      }
+    }
+  }
+}
+
+
+$overflow-values: (unset: unset,
+  auto: auto,
+  hidden: hidden,
+  scroll: scroll,
+  visible: visible);
+
+// Generate overflow classes
+@each $key,
+$value in $overflow-values {
+  .overflow-#{$key} {
+    overflow: $value !important;
+  }
+}
+
+// Generate responsive overflow classes
+@each $breakpoint,
+$value in $screen {
+  @include screen(#{$breakpoint}) {
+
+    @each $key,
+    $value in $overflow-values {
+      .overflow-#{$breakpoint}-#{$key} {
+        overflow: $value !important;
+      }
+    }
+  }
+}
+
+// Generate overflow classes for x, y
+@each $key,
+$value in $overflow-values {
+  .overflow-x#{$key} {
+    overflow-x: $value !important;
+  }
+}
+
+@each $key,
+$value in $overflow-values {
+  .overflow-y#{$key} {
+    overflow-y: $value !important;
+  }
+}
+
+// Generate responsive overflow classes for x, y
+@each $breakpoint,
+$value in $screen {
+  @include screen(#{$breakpoint}) {
+
+    @each $key,
+    $value in $overflow-values {
+      .overflow-x#{$breakpoint}-#{$key} {
+        overflow-x: $value !important;
+      }
+    }
+  }
+}
+
+@each $breakpoint,
+$value in $screen {
+  @include screen(#{$breakpoint}) {
+
+    @each $key,
+    $value in $overflow-values {
+      .overflow-y#{$breakpoint}-#{$key} {
+        overflow-y: $value !important;
+      }
+    }
+  }
+}

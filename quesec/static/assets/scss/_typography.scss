@@ -1,0 +1,311 @@
+* {
+  box-sizing: border-box;
+}
+
+// html {
+//   scroll-behavior: initial !important;
+// }
+
+body {
+  font-family: $font-noto-sans;
+  font-size: 16px;
+  line-height: 150% !important;
+  position: relative;
+  z-index: 1;
+  transition: $transition;
+  overflow-x: hidden;
+}
+
+// lenis scroll
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+// scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $secondary2;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-button,
+::-webkit-scrollbar-thumb {
+  background: $primary;
+  border-radius: 5px;
+}
+
+::-moz-selection {
+  color: $secondary2;
+  background: $primary;
+}
+
+::selection {
+  color: $secondary2;
+  background: $primary;
+}
+
+section,
+footer {
+  position: relative;
+  overflow: hidden;
+  max-width: 1920px;
+  width: 100%;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+a {
+  text-decoration: none;
+  transition: all 0.4s ease;
+}
+
+input,
+textarea {
+  box-sizing: border-box !important;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// font sizes
+$breakpoints: (2xl: 1599px,
+  xxl: 1399px,
+  xl: 1199px,
+  lg: 991px,
+  md: 767px, sm: 575px);
+
+// Font sizes
+$font-sizes: (display-one: (96px, 88px, 72px, 56px, 48px),
+  display-two: (88px, 72px, 56px, 48px, 40px),
+  display-three: (64px, 56px, 48px, 42px, 36px),
+  display-four: (56px, 48px, 40px, 36px, 32px),
+  h1: (48px, 40px, 38px, 32px, 28px),
+  h2: (40px, 36px, 32px, 28px, 24px),
+  h3: (32px, 28px, 26px, 24px, 20px),
+  h4: (24px, 22px, 20px, 20px, 18px),
+  h5: (20px, 18px, 16px, 16px, 16px),
+  h6: (16px, 16px, 16px, 16px, 16px),
+  text-2xl: (24px, 24px, 20px, 18px, 16px),
+  text-xl: (20px, 20px, 18px, 18px, 16px),
+  text-lg: (18px, 18px, 16px, 16px, 16px),
+  text-md: (16px, 16px, 16px, 14px, 14px),
+  text-sm: (14px, 14px, 14px, 14px, 12px),
+  text-xs: (12px, 12px, 12px, 10px, 10px), );
+
+@mixin responsive-font-size($class) {
+  $sizes: map-get($font-sizes, $class);
+  font-size: nth($sizes, 1);
+
+  $total-sizes: length($sizes);
+
+  @each $breakpoint,
+  $value in $breakpoints {
+    $index: index(map-keys($breakpoints), $breakpoint) + 1;
+
+    @if $index <=$total-sizes {
+      @media (max-width: $value) {
+        font-size: nth($sizes, $index);
+      }
+    }
+  }
+}
+
+// Apply styles
+@each $class,
+$sizes in $font-sizes {
+  .#{$class} {
+    @include responsive-font-size($class);
+  }
+}
+
+// Additional classes
+h1,
+.text-h1 {
+  @extend .h1;
+}
+
+h2,
+.text-h2 {
+  @extend .h2;
+}
+
+h3,
+.text-h3 {
+  @extend .h3;
+}
+
+h4,
+.text-h4 {
+  @extend .h4;
+}
+
+h5,
+.text-h5 {
+  @extend .h5;
+}
+
+.text-base {
+  @extend .text-md;
+}
+
+
+// Define spacing values
+$spacings: (120: (default: 120px,
+    lg: 80px,
+    md: 60px),
+  100: (default: 100px,
+    lg: 60px,
+    md: 40px));
+
+
+// Define directions for spacing (padding/margin)
+$directions: (t: top,
+  b: bottom,
+  l: left,
+  r: right);
+
+// Define breakpoints
+$breakpoints2: (lg: 991px,
+  md: 767px,
+  sm: 575px);
+
+@mixin responsive-spacing($property, $direction, $size) {
+  $values: map-get($spacings, $size);
+
+  // Default spacing
+  #{$property}-#{$direction}: map-get($values, default);
+
+  // Responsive spacing for each breakpoint
+  @each $breakpoint,
+  $width in $breakpoints2 {
+    @if map-has-key($values, $breakpoint) {
+      @media (max-width: $width) {
+        #{$property}-#{$direction}: map-get($values, $breakpoint);
+      }
+    }
+  }
+}
+
+// Mixin to generate all spacing classes
+@mixin generate-all-spacing($property) {
+
+  @each $size,
+  $values in $spacings {
+
+    @each $short,
+    $direction in $directions {
+      @if $property=='m' {
+        .#{$property}#{$short}-#{$size} {
+          @include responsive-spacing(margin, $direction, $size);
+        }
+      }
+
+      @else if $property=='p' {
+        .#{$property}#{$short}-#{$size} {
+          @include responsive-spacing(padding, $direction, $size);
+        }
+      }
+    }
+  }
+}
+
+// Generate all padding classes
+@include generate-all-spacing('p');
+
+// Generate all margin classes
+@include generate-all-spacing('m');
+
+// helpers
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.text-h1,
+.text-h2,
+.text-h3,
+.text-h4,
+.text-h5,
+.text-h6,
+.display-one,
+.display-two,
+.display-three,
+.display-four {
+  font-family: $font-archivo;
+  font-weight: 700;
+  display: block;
+  margin: 0;
+  padding: 0;
+  line-height: 120% !important;
+
+  a,
+  span {
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+}
+
+p {
+  margin: 0;
+}
+
+a,
+button {
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0;
+  color: inherit;
+  border: unset;
+  outline: unset;
+  background: unset;
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  text-transform: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+  }
+}
+
+// form
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+}

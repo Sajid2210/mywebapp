@@ -90,7 +90,9 @@ USE_TZ = True
 
 # --- STATIC & MEDIA ---
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / "static_src"] if (BASE_DIR / "static_src").exists() else []
+STATICFILES_DIRS = [
+    'quesec/static',
+]
 STATIC_ROOT = BASE_DIR / "static"
 
 MEDIA_URL = "/media/"

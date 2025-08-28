@@ -1,0 +1,35 @@
+// import google fonts
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+// font variables
+$font-noto-sans : "Noto Sans",
+sans-serif;
+$font-archivo : "Archivo",
+sans-serif;
+
+
+// // color variables
+$primary: #E9FFA4;
+$primary2: #7D8877;
+$secondary: #F1E3B3;
+$secondary2: #EB453B;
+// color variables
+$n0: #FFFFFF;
+$n10: #F7F9FC;
+$n20: #F5F9F3;
+$n30: #909090;
+$n50: #4D4D4D;
+$n100: #000000;
+
+$gradient-1: linear-gradient(180deg, #FFF0BB 6.98%, rgba(255, 240, 187, 0.00) 105.21%);
+$gradient-2: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 29.9%, rgba(0, 0, 0, 0.00) 81.46%);
+
+// transition variables
+$transition: all 0.3s ease-in-out;
+$transition-slow: all 0.5s ease-in-out;
+
+// // box shadow variables
+$shadow-1: 0px 2px 4px 0px rgba(28, 28, 28, 0.08),
+0px 1px 2px 0px rgba(28, 28, 28, 0.04);
+$shadow-2: 0px 4px 6px -2px rgba(16, 24, 40, 0.03),
+0px 12px 16px -4px rgba(16, 24, 40, 0.08);

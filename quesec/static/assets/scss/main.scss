@@ -1,0 +1,35 @@
+/*---------------------------------------
+    Template Name:  CycleCity HTML
+    Description:    CycleCity HTML Template
+    Author Name:    uiaxis
+    Author URI:     https://themeforest.net/user/uiaxis/portfolio
+    Theme URI:      https://themeforest.net/user/uiaxis/portfolio
+    Version:        1.0
+-----------------------------------------
+             Table of contents
+-----------------------------------------
+    color variables
+    Typography 
+    mixins
+    Pages styles
+---------------------------------------*/
+
+// plugins css
+@import "../css/bootstrap-custom.css";
+@import "../fonts/fill/style.css";
+@import "../fonts/regular/style.css";
+@import "splitting/dist/splitting.css";
+
+// Sass files
+// @import "bootstrap-custom"; // we use this file to customize bootstrap, after customize bootstrap we use customize version ( bootstrap-custom.css )
+@import "variables";
+@import "typography";
+@import "animation";
+@import "cursor";
+@import "mixins";
+@import "components";
+@import "common";
+@import "header";
+@import "footer";
+@import "loader";
+@import "pages";

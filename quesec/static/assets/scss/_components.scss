@@ -1,0 +1,520 @@
+// button
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: $primary;
+    color: $n0;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: 500;
+    transition: $transition;
+    border-radius: 50rem;
+
+    @include screen(lg) {
+        padding: 12px 24px;
+    }
+
+    &:hover {
+        background: $secondary;
+    }
+}
+
+.btn-secondary {
+    @extend .btn-primary;
+    background: $secondary2;
+    color: $n0;
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        overflow: hidden;
+        position: relative;
+        display: grid;
+        place-items: center;
+
+        i {
+            &:first-child {
+                transition: $transition-slow;
+                transform: translate(0);
+            }
+
+            &:last-child {
+                position: absolute;
+                transform: translate(-150%, 150%);
+                transition: $transition-slow;
+            }
+        }
+    }
+
+    &:hover {
+        background: $primary2;
+
+        .icon {
+            i {
+                &:first-child {
+                    transition: $transition-slow;
+                    transform: translate(150%, -150%);
+                }
+
+                &:last-child {
+                    transition: $transition-slow .1s;
+                    transform: translate(0);
+                }
+            }
+        }
+    }
+}
+
+.outline-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    font-size: 14px;
+    border: 1px solid $n100;
+    color: $n100;
+    background: transparent;
+
+    @include screen(lg) {
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+
+    .icon {
+        width: 20px;
+        height: 20px;
+        overflow: hidden;
+        position: relative;
+        display: grid;
+        place-items: center;
+
+        i {
+            &:first-child {
+                transition: $transition;
+                transform: translate(0);
+            }
+
+            &:last-child {
+                position: absolute;
+                transform: translate(-150%, 150%);
+                transition: $transition;
+            }
+        }
+    }
+
+    &:hover {
+        color: $n0;
+
+        .icon {
+            i {
+                color: inherit;
+
+                &:first-child {
+                    transition: $transition;
+                    transform: translate(150%, -150%);
+                }
+
+                &:last-child {
+                    transition: $transition .1s;
+                    transform: translate(0);
+                }
+            }
+        }
+    }
+}
+
+
+// box style
+.box-style {
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: var(--y);
+        left: var(--x);
+        transform: translate(-50%, -50%);
+        width: 0;
+        height: 0;
+        border-radius: 100%;
+        transition: all 0.7s ease;
+        z-index: -1;
+    }
+
+    &:hover::before {
+        width: 400%;
+        height: 400%;
+    }
+
+    &.box-primary {
+        &::before {
+            background: $primary;
+        }
+    }
+
+    &.box-primary2 {
+        &::before {
+            background: $primary2;
+        }
+    }
+
+    &.box-secondary {
+        &::before {
+            background: $secondary;
+        }
+    }
+
+    &.box-secondary2 {
+        &::before {
+            background: $secondary2;
+        }
+    }
+
+    &.box-n20 {
+        &::before {
+            background: $n20;
+        }
+    }
+}
+
+// accordion area
+.accordion-area {
+    .accordion-item {
+        transition: $transition;
+
+        .accordion-header {
+            cursor: pointer;
+            transition: $transition;
+
+            .accordion-icon {
+                position: relative;
+                z-index: 1;
+                @include box(20);
+                font-size: initial;
+
+                &::before {
+                    content: "\e3d4";
+                    font-family: 'phosphor';
+                    font-weight: 500;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    z-index: -1;
+                    transition: $transition;
+                }
+            }
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0;
+            padding-top: 0;
+            transition: max-height 0.5s ease, padding-top 0.5s ease;
+        }
+
+        &.show {
+            background: $n20;
+
+            .accordion-header {
+
+                .accordion-icon {
+
+                    &::before {
+                        transform: translate(-50%, -50%) rotate(360deg);
+                        content: "\e32a";
+                    }
+                }
+            }
+        }
+    }
+}
+
+// input type checkbox
+.input-radiobox {
+
+    .checkbox {
+        cursor: pointer;
+        position: relative;
+        @include box(20);
+        border: 1px solid $n100;
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            @include box(12);
+            border: 1px solid $n100;
+        }
+    }
+
+    input:checked+.checkbox {
+
+        &::after {
+            background: $n100;
+        }
+    }
+
+    &:has(input:checked) {
+        background: $n20;
+        border: 1px solid $n100 !important;
+    }
+}
+
+.input-checkbox {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+
+    .checkbox {
+        cursor: pointer;
+        position: relative;
+        border: 1px solid $n50;
+        background: $n20;
+        transition: $transition;
+        min-width: 16px;
+        min-height: 16px;
+        display: flex;
+        align-items: center;
+
+    }
+
+    input:checked+.checkbox {
+        border: 1px solid $secondary2;
+        background: $primary;
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 6px;
+            width: 4px;
+            height: 10px;
+            border: solid $secondary2;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+    }
+}
+
+.focus-primary {
+
+    &:focus,
+    &:focus-within,
+    &:focus-visible {
+        border-color: $primary !important;
+    }
+}
+
+.focus-primary2 {
+
+    &:focus,
+    &:focus-within,
+    &:focus-visible {
+        border-color: $primary2 !important;
+    }
+}
+
+.focus-secondary {
+
+    &:focus,
+    &:focus-within,
+    &:focus-visible {
+        border-color: $secondary !important;
+    }
+}
+
+.focus-secondary2 {
+
+    &:focus,
+    &:focus-within,
+    &:focus-visible {
+        border-color: $secondary2 !important;
+    }
+}
+
+// image zoomer
+
+.zoomed-image-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease-in-out;
+}
+
+.zoomed-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+}
+
+.zoomable-image-container:hover .zoomed-image-container {
+    opacity: 1;
+    visibility: visible;
+}
+
+// tab 
+.tab-btn-area {
+    .tab-btn {
+        cursor: pointer;
+        transition: $transition;
+        background: $n20;
+
+        &.active {
+            color: $n0;
+            background: $n100;
+        }
+    }
+}
+
+.tab-content {
+    visibility: hidden;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(10px);
+    height: 0;
+    transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.tab-content.active {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0px);
+    height: auto;
+    transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+/* Base tooltip styles */
+.tooltip-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background: #333;
+    color: #fff;
+    padding: 3px 6px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    font-size: 12px;
+    z-index: 100;
+}
+
+.tooltip-btn::before {
+    content: "";
+    position: absolute;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 100;
+}
+
+/* Tooltip visible styles */
+.tooltip-btn:hover::after,
+.tooltip-btn:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Tooltip positions */
+.tooltip-bottom {
+    &::after {
+        top: 120%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    &::before {
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+.tooltip-top {
+    &::after {
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    &::before {
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+.tooltip-left {
+    &::after {
+        right: 120%;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    &::before {
+        right: 100%;
+        top: 50%;
+        transform: translateY(-50%) rotate(-90deg);
+    }
+
+}
+
+.tooltip-right {
+    &::after {
+        left: 120%;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    &::before {
+        left: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+
+
+// animate box
+.animate-box {
+    will-change: transform;
+}
+
+.filter-btn {
+    cursor: pointer;
+    transition: $transition;
+    background: $n0 !important;
+
+    &.active {
+        color: $n0 !important;
+        background: $n100 !important;
+    }
+}

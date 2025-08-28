@@ -1,0 +1,69 @@
+.cursor {
+    position: absolute;
+    background: $secondary2;
+    width: 16px;
+    height: 16px;
+    border-radius: 100%;
+    z-index: 100;
+    transition: 0.5s cubic-bezier(0.75, -1.27, 0.3, 2.33) transform,
+        0.5s cubic-bezier(0.75, -1.27, 0.3, 2.33) opacity;
+    user-select: none;
+    pointer-events: none;
+    transform: scale(0.8);
+    backdrop-filter: blur(1px);
+}
+
+.cursor.active {
+    opacity: 1;
+    transform: scale(6);
+    background: rgba($secondary2, 0.5);
+}
+
+.cursor::before {
+    content: attr(data-text);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    font-size: 2px;
+    top: 30%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    border-radius: 100%;
+    opacity: 0;
+    color: #fff;
+}
+
+.cursor.active::before {
+    opacity: 1;
+}
+
+.cursor-follower {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    z-index: 100;
+    border: 1px solid $secondary2;
+    transition: 0.15s ease-out;
+    user-select: none;
+    pointer-events: none;
+    transform: translate(4px, 4px);
+}
+
+.cursor-follower.active {
+    opacity: 0.3;
+    transform: scale(0);
+}
+
+.cursor.hide,
+.cursor-follower.hide {
+    display: none;
+}
+
+@media screen and (max-width: 991px) {
+
+    .cursor,
+    .cursor-follower {
+        display: none;
+    }
+}
