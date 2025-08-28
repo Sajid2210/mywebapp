@@ -6,7 +6,8 @@ __pycache__/
 .env
 
 # Django collectstatic output
-/static/
+staticfiles/
+media/
 
 # Virtualenv
 env/
