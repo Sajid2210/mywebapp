@@ -2,33 +2,30 @@ from pathlib import Path
 import os
 import environ
 
-# -----------------------------------------------------------------------------
-# Paths
-# -----------------------------------------------------------------------------
-BASE_DIR = Path(__file__).resolve().parent.parent  # /.../src/quesec
-PROJECT_ROOT = BASE_DIR.parent                     # /.../src
-REPO_ROOT = PROJECT_ROOT.parent                    # /.../
+# ---------------------- Paths ----------------------
+BASE_DIR = Path(__file__).resolve().parent.parent      # /.../src/quesec
+PROJECT_DIR = BASE_DIR                                 # /.../src
+REPO_DIR = PROJECT_DIR.parent                          # repo root (optional)
 
-# -----------------------------------------------------------------------------
-# Env
-# -----------------------------------------------------------------------------
+# ---------------------- Env ------------------------
 env = environ.Env()
-# .env file kept in /src (we symlinked it on server). Works locally too.
-environ.Env.read_env(env_file=BASE_DIR / ".env")
+# Look for .env first in /src, then in repo root (works on PC & EC2)
+env_file = PROJECT_DIR / ".env"
+if not env_file.exists():
+    alt = REPO_DIR / ".env"
+    if alt.exists():
+        env_file = alt
+environ.Env.read_env(env_file)
 
-# -----------------------------------------------------------------------------
-# Core
-# -----------------------------------------------------------------------------
-SECRET_KEY = env("SECRET_KEY", default="dev-please-change-me")
+# ---------------------- Core -----------------------
+SECRET_KEY = env("SECRET_KEY", default="dev-change-me")
 DEBUG = env.bool("DEBUG", default=True)
 
-# Comma-separated in .env: "localhost,127.0.0.1,15.207.20.154,15.207.20.154.nip.io"
+# Comma-separated in .env
 ALLOWED_HOSTS = [h.strip() for h in env("ALLOWED_HOSTS", default="").split(",") if h.strip()]
-CSRF_TRUSTED_ORIGINS = [o.strip() for o in env("CSRF_TRUSTED_ORIGINS", default="").split(",") if o.strip()]
+CSRF_TRUSTED_ORIGINS = [u.strip() for u in env("CSRF_TRUSTED_ORIGINS", default="").split(",") if u.strip()]
 
-# -----------------------------------------------------------------------------
-# Installed apps / middleware
-# -----------------------------------------------------------------------------
+# ---------------------- Apps/Middleware ------------
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -36,7 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # your apps here, e.g. "shop", "core", etc.
+    # your apps...
 ]
 
 MIDDLEWARE = [
@@ -51,14 +48,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "quesec.urls"
 
-# -----------------------------------------------------------------------------
-# Templates  (your home.html lives in project templates)
-# Keep your templates in: /src/templates/home.html
-# -----------------------------------------------------------------------------
+# ---------------------- Templates ------------------
+# Keep your HTML in:  /src/templates/   (home.html yahin rakho)
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],   # <-- /src/templates
+        "DIRS": [PROJECT_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -73,9 +68,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "quesec.wsgi.application"
 
-# -----------------------------------------------------------------------------
-# Database (PostgreSQL via .env for both local + server)
-# -----------------------------------------------------------------------------
+# ---------------------- Database -------------------
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -84,48 +77,36 @@ DATABASES = {
         "PASSWORD": env("DB_PASSWORD", default=""),
         "HOST": env("DB_HOST", default="127.0.0.1"),
         "PORT": env("DB_PORT", default="5432"),
-        "CONN_MAX_AGE": 60,  # keep connections open (prod-friendly)
+        "CONN_MAX_AGE": 60,
     }
 }
 
-# -----------------------------------------------------------------------------
-# Password validation / i18n
-# -----------------------------------------------------------------------------
-AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-]
-
+# ---------------------- i18n -----------------------
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = "Asia/Kolkata"
+TIME_ZONE = env("TIME_ZONE", default="Asia/Kolkata")
 USE_I18N = True
 USE_TZ = True
 
-# -----------------------------------------------------------------------------
-# Static & Media
-# In prod (DEBUG=False) Django won’t serve static; Nginx serves from STATIC_ROOT.
-# -----------------------------------------------------------------------------
+# ---------------------- Static & Media -------------
+# In prod (DEBUG=False), run: python manage.py collectstatic
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "static"     # /src/static (collectstatic target)
-# If you keep extra source assets (optional), uncomment and point correctly:
-# STATICFILES_DIRS = [ PROJECT_ROOT / "assets" ]
+STATIC_ROOT = PROJECT_DIR / "static"   # collectstatic target: /src/static
+
+# Where your source assets live (Django will copy these into STATIC_ROOT)
+STATICFILES_DIRS = [
+    PROJECT_DIR / "assets",                 # /src/assets/... (optional)
+    PROJECT_DIR / "templates" / "assets",   # /src/templates/assets/... (optional)
+]
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"       # /src/media
+MEDIA_ROOT = PROJECT_DIR / "media"
 
-# -----------------------------------------------------------------------------
-# Security (safe defaults when DEBUG=False)
-# -----------------------------------------------------------------------------
+# ---------------------- Security (prod-friendly) ---
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE   = not DEBUG
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = "DENY"
 
-# -----------------------------------------------------------------------------
-# Default auto field
-# -----------------------------------------------------------------------------
+# ---------------------- Misc -----------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
