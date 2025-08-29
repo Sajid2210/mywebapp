@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import environ
+from decouple import config
 
 # ---------------------- Paths ----------------------
 BASE_DIR = Path(__file__).resolve().parent.parent      # /.../src/quesec
@@ -134,12 +135,18 @@ else:
     AWS_QUERYSTRING_AUTH     = False      # clean URLs; set True if you want signed URLs
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 
+     # Prefer region-specific virtual-hosted style endpoint
+    _region = AWS_S3_REGION_NAME or "ap-south-1"
+    _bucket = AWS_STORAGE_BUCKET_NAME
+    _custom_from_env = config("AWS_S3_CUSTOM_DOMAIN", default="")
+    _s3_domain = _custom_from_env or (f"{_bucket}.s3.{_region}.amazonaws.com" if _bucket else "")
+
     # MEDIA_URL for S3
     if AWS_S3_CUSTOM_DOMAIN:
         MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
     else:
         # standard S3 virtual-hosted–style URL
-        MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/"
+        MEDIA_URL = f"https://{_s3_domain}/"
 
 # ---------------------- Security (prod-friendly) ---
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
