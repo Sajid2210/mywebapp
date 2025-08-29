@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+  <div class="row g-4">
+    <div class="col-md-6">
+      {# Variation images first; else product images; else cover_image #}
+      {% if selected_variation and selected_variation.images.all %}
+        {% with gal=selected_variation.images.all %}
+          {% if gal %}
+            <img src="{{ gal.0.image.url }}" class="img-fluid rounded" alt="{{ gal.0.alt_text|default:product.name }}">
+            <div class="row mt-2 g-2">
+              {% for img in gal %}
+                <div class="col-3"><img src="{{ img.image.url }}" alt="{{ img.alt_text }}" class="img-fluid rounded"></div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+      {% elif product.images.all %}
+        {% with gal=product.images.all %}
+          {% if gal %}
+            <img src="{{ gal.0.image.url }}" class="img-fluid rounded" alt="{{ gal.0.alt_text|default:product.name }}">
+            <div class="row mt-2 g-2">
+              {% for img in gal %}
+                <div class="col-3"><img src="{{ img.image.url }}" alt="{{ img.alt_text }}" class="img-fluid rounded"></div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+      {% elif product.cover_image %}
+        <img src="{{ product.cover_image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+      {% endif %}
+    </div>
+
+    <div class="col-md-6">
+      <h3 class="mb-1">
+        {% if selected_variation and selected_variation.name %}
+          {{ selected_variation.name }}
+        {% else %}
+          {{ product.name }}
+        {% endif %}
+      </h3>
+
+      <div class="text-muted mb-2">
+        {{ product.brand }} • {{ product.category.name }}
+        • SKU: {% if selected_variation %}{{ selected_variation.sku }}{% else %}{{ product.sku }}{% endif %}
+        {% if selected_variation and selected_variation.color %} • Color: {{ selected_variation.color }}{% endif %}
+        {% if selected_variation and selected_variation.size %} • Size: {{ selected_variation.size }}{% endif %}
+      </div>
+
+      <div class="h4 mb-3">
+        ₹ {{ product.selling_price }}
+        {% if product.mrp and product.mrp > product.selling_price %}
+          <del class="h6 text-muted ms-2">₹ {{ product.mrp }}</del>
+        {% endif %}
+      </div>
+
+      {# Variation selector #}
+      {% if variations %}
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Choose Variation</label>
+        <div class="d-flex flex-wrap gap-2">
+          {% for v in variations %}
+            {% if selected_variation and selected_variation.id == v.id %}
+              <a href="{% url 'products:product_detail_variation' product.slug v.slug %}" class="btn btn-dark btn-sm disabled">
+                {{ v.name|default_if_none:"" }}{% if not v.name %}{{ v.color }} {{ v.size }}{% endif %}
+              </a>
+            {% else %}
+              <a href="{% url 'products:product_detail_variation' product.slug v.slug %}" class="btn btn-outline-dark btn-sm">
+                {{ v.name|default_if_none:"" }}{% if not v.name %}{{ v.color }} {{ v.size }}{% endif %}
+              </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <p class="mb-3">{{ product.short_description }}</p>
+
+      {# CART BLOCK REMOVED (no 'cart' namespace used) #}
+      {# <form action="{% url 'cart:add_to_cart' product.id %}" ...> ... </form> #}
+
+      <hr>
+      <h5>Description</h5>
+      <div>{{ product.description|linebreaks }}</div>
+
+      <hr>
+      <h5>Related Products</h5>
+      <div class="row g-3">
+        {% for r in related %}
+          <div class="col-6 col-lg-3">
+            <a href="{% url 'products:product_detail' r.slug %}" class="text-decoration-none">
+              {% if r.cover_image %}<img src="{{ r.cover_image.url }}" class="img-fluid rounded mb-1" alt="{{ r.name }}">{% endif %}
+              <div class="small">{{ r.name }}</div>
+              <div class="fw-semibold">₹ {{ r.selling_price }}</div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

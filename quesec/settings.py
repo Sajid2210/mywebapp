@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # your apps...
+    "products",
 ]
 
 MIDDLEWARE = [
@@ -93,10 +93,20 @@ STATIC_URL = "/static/"
 STATIC_ROOT = PROJECT_DIR / "static"   # collectstatic target: /src/static
 
 # Where your source assets live (Django will copy these into STATIC_ROOT)
-STATICFILES_DIRS = [
-    PROJECT_DIR / "assets",                 # /src/assets/... (optional)
-    PROJECT_DIR / "templates" / "assets",   # /src/templates/assets/... (optional)
-]
+STATICFILES_DIRS = []
+
+from pathlib import Path
+_app_static_assets = PROJECT_DIR / "quesec" / "static"/"assets"
+if _app_static_assets.exists():
+    # 'assets/...' URL ko 'quesec/static_assets/...' directory se map karo
+    STATICFILES_DIRS.append(("assets", _app_static_assets))
+
+# (optional) agar aapne repo-level 'assets' ya 'templates/assets' bhi rakhe hain to:
+_repo_assets = PROJECT_DIR / "assets"
+_templates_assets = PROJECT_DIR / "templates" / "assets"
+for p in (_repo_assets, _templates_assets):
+    if p.exists():
+        STATICFILES_DIRS.append(p)
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = PROJECT_DIR / "media"
