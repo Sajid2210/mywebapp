@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "storages",
     "products",
 ]
 
@@ -108,8 +109,37 @@ for p in (_repo_assets, _templates_assets):
     if p.exists():
         STATICFILES_DIRS.append(p)
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = PROJECT_DIR / "media"
+# --------------------------------
+# Media: local when DEBUG=True, S3 when DEBUG=False
+
+if DEBUG:
+    # Local dev
+    MEDIA_URL  = "/media/"
+    MEDIA_ROOT = PROJECT_DIR / "media"
+else:
+    # --------- S3 (django-storages) ----------
+    DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+    AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+    AWS_S3_REGION_NAME      = env("AWS_S3_REGION_NAME", default="ap-south-1")
+    AWS_ACCESS_KEY_ID       = env("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY   = env("AWS_SECRET_ACCESS_KEY")
+
+    # Optional: custom domain (CloudFront or S3 website endpoint)
+    AWS_S3_CUSTOM_DOMAIN    = env("AWS_S3_CUSTOM_DOMAIN", default="")
+
+    AWS_S3_SIGNATURE_VERSION = "s3v4"
+    AWS_S3_FILE_OVERWRITE    = False      # don't overwrite files with same name
+    AWS_DEFAULT_ACL          = None       # objects not given legacy ACL
+    AWS_QUERYSTRING_AUTH     = False      # clean URLs; set True if you want signed URLs
+    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+
+    # MEDIA_URL for S3
+    if AWS_S3_CUSTOM_DOMAIN:
+        MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
+    else:
+        # standard S3 virtual-hosted–style URL
+        MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/"
 
 # ---------------------- Security (prod-friendly) ---
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
