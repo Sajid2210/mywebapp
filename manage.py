@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
-import os
-import sys
+import os, sys
+from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent
+SRC_DIR = BASE_DIR / "src"          # local me yeh exist nahi hota
+if SRC_DIR.exists() and str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
 def main():
     """Run administrative tasks."""
